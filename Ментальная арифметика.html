@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"><title>Ментальная арифметика</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg1:#8fd3ff;--bg2:#d9b8ff;--card:#fffffff0;--tx:#2b2358;--mut:#7a6fb0;--pri:#7c4dff;--pri2:#5a31d6;--ok:#12b76a;--bad:#f04438;--bd:#e6defb;--inp:#f6f2ff;--y:#ffc233}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#2a2170;--bg2:#4a2a8f;--card:#2b2360ee;--tx:#f4f0ff;--mut:#bcb0f0;--pri:#a78bfa;--pri2:#7c5cf0;--bd:#443a8a;--inp:#382e78}}
+:root[data-theme="dark"]{--bg1:#2a2170;--bg2:#4a2a8f;--card:#2b2360ee;--tx:#f4f0ff;--mut:#bcb0f0;--pri:#a78bfa;--pri2:#7c5cf0;--bd:#443a8a;--inp:#382e78}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;color:var(--tx);font-family:"Fredoka","Nunito","Trebuchet MS",system-ui,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed;overflow-x:hidden}
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg span{position:absolute;font-size:34px;opacity:.55;animation:fl 7s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-22px) rotate(10deg)}}
+.wrap{max-width:560px;margin:0 auto;padding:12px;position:relative;z-index:1}
+.ad{border:2px dashed #fff9;color:#fffd;font-size:12px;text-align:center;border-radius:14px;padding:10px;margin:8px 0;min-height:60px;display:flex;align-items:center;justify-content:center}
+.card{background:var(--card);border-radius:28px;padding:20px;margin:12px 0;box-shadow:0 8px 0 #0000001a,0 18px 40px #3b1f9a33;animation:pop .35s ease}
+@keyframes pop{from{transform:scale(.92);opacity:0}}
+.logo{text-align:center}
+.logo .m{font-size:64px;line-height:1;display:inline-block;animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-5deg)}}
+h1{font-size:28px;margin:6px 0 2px;color:var(--pri2);text-align:center}
+.cl{background:linear-gradient(90deg,#ff5d8f,#ffb02e,#12b76a,#2e90fa,#7c4dff);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:21px;margin:0 0 6px}
+.mut{color:var(--mut);font-size:15px}
+label{display:block;font-size:16px;font-weight:600;margin:14px 0 5px}
+input[type=text],input[type=tel],input[type=number],select{width:100%;padding:13px 14px;border-radius:16px;border:3px solid var(--bd);background:var(--inp);color:var(--tx);font-size:18px;font-family:inherit;outline:0}
+input:focus,select:focus{border-color:var(--pri)}
+input[type=range]{width:100%;accent-color:var(--pri);height:28px}
+button{font-family:inherit;font-size:19px;padding:13px 18px;border-radius:18px;border:0;background:var(--pri);color:#fff;cursor:pointer;font-weight:700;box-shadow:0 5px 0 var(--pri2);transition:transform .08s,box-shadow .08s}
+button:active{transform:translateY(4px);box-shadow:0 1px 0 var(--pri2)}
+button.sec{background:#fff;color:var(--pri2);box-shadow:0 5px 0 var(--bd);border:2px solid var(--bd)}
+#start,#chk,#aGo{background:linear-gradient(180deg,#34d399,#12b76a);box-shadow:0 5px 0 #0b8a4f;font-size:22px}
+#again{background:linear-gradient(180deg,#ffb02e,#ff8a00);box-shadow:0 5px 0 #c26500}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.row>button{flex:1}
+.chk{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:16px;background:var(--inp);padding:10px 12px;border-radius:14px}
+.chk input{width:22px;height:22px;accent-color:var(--pri)}
+.big{font-size:min(34vw,170px);font-weight:700;text-align:center;line-height:1.15;min-height:1.3em;font-variant-numeric:tabular-nums;text-shadow:0 5px 0 #0000001f}
+.big.pp{animation:np .25s ease}
+@keyframes np{from{transform:scale(.4);opacity:0}60%{transform:scale(1.12)}}
+.bar{height:16px;background:var(--inp);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff5d8f,#ffb02e,#12b76a);border-radius:99px;transition:width .2s}
+.res{font-size:26px;text-align:center;font-weight:700;margin:8px 0}
+.face{font-size:80px;text-align:center;line-height:1}
+.hide{display:none}.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.err{color:var(--bad);font-size:15px;margin-top:8px;font-weight:600}
+.tabs{display:flex;gap:8px}.tabs button{flex:1;padding:10px;font-size:17px}
+.sh{animation:sh .5s}@keyframes sh{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.cf{position:fixed;top:-40px;font-size:28px;z-index:9;pointer-events:none;animation:cf linear forwards}
+@keyframes cf{to{transform:translateY(110vh) rotate(540deg)}}
+</style></head><body><div class="bg"><span style="left:6%;top:12%">☁️</span><span style="left:80%;top:8%;animation-delay:1s">⭐</span><span style="left:12%;top:70%;animation-delay:2s">🌈</span><span style="left:85%;top:60%;animation-delay:.5s">🎈</span><span style="left:45%;top:88%;animation-delay:3s">✨</span><span style="left:70%;top:35%;animation-delay:1.5s">☁️</span></div>
+<div class="wrap">
+<div class="ad" id="adTop">Место для рекламы (баннер)</div>
+
+<div id="auth" class="card">
+ <div class="logo"><span class="m">🦉</span></div><h1 class="cl">Ментальная арифметика</h1><div class="mut" style="text-align:center">Привет! Давай познакомимся 👋</div>
+ <div class="tabs row"><button id="tReg">🌟 Новый игрок</button><button id="tLog" class="sec">🔑 Я уже играл</button></div>
+ <label>Имя</label><input type="text" id="fn" autocomplete="given-name">
+ <label>Фамилия</label><input type="text" id="ln" autocomplete="family-name">
+ <label>Номер телефона <span class="mut">(необязательно)</span></label><input type="tel" id="ph" autocomplete="tel">
+ <div class="err" id="aerr"></div>
+ <div class="row"><button id="aGo">Поехали! 🚀</button></div>
+</div>
+
+<div id="setup" class="card hide">
+ <div class="top"><div><h2 id="hello"></h2><div class="mut" id="stats"></div></div><button class="sec" id="out" style="flex:0;padding:8px 12px">👋 Выйти</button></div>
+ <label>🎯 Сложность</label>
+ <select id="mode"><option value="simple">Без формул</option><option value="formula">С формулами</option></select>
+ <div id="fbox" class="hide">
+  <div class="chk"><input type="checkbox" id="f5" checked><span>Брат 5 (например +4 = +5 −1)</span></div>
+  <div class="chk"><input type="checkbox" id="f10" checked><span>Брат 10 (например +9 = +10 −1)</span></div>
+  <div class="chk"><input type="checkbox" id="fm"><span>Смешанные (5 и 10 вместе)</span></div>
+ </div>
+ <label>🔢 Какие числа</label>
+ <select id="dg"><option value="1">Однозначные (1–9)</option><option value="2">Двузначные (10–99)</option></select>
+ <label>🔟 Сколько чисел: <b id="cv">10</b></label><input type="range" id="cnt" min="3" max="30" value="10">
+ <label>⏱️ Скорость, пауза: <b id="iv">1.0</b> сек</label><input type="range" id="int" min="0.2" max="5" step="0.1" value="1">
+ <div class="row"><button id="start">🚀 Поехали!</button></div>
+</div>
+
+<div id="play" class="card hide">
+ <div class="bar"><i id="pb"></i></div><div class="mut" id="prog" style="text-align:center"></div>
+ <div class="big" id="num"></div>
+ <div class="row"><button class="sec" id="stop">Остановить</button></div>
+</div>
+
+<div id="ask" class="card hide">
+ <div class="face">🤔</div><h2 style="text-align:center">Чему равна сумма?</h2>
+ <input type="number" id="ans" inputmode="numeric" placeholder="Ваш ответ">
+ <div class="row"><button id="chk">Проверить ✅</button></div>
+</div>
+
+<div id="done" class="card hide">
+ <div class="face" id="face"></div><div class="res" id="rmsg"></div><div class="mut" id="rsub" style="text-align:center"></div>
+ <div class="row"><button id="again">🔁 Ещё раз!</button><button class="sec" id="toSet">Настройки</button></div>
+</div>
+
+<div class="ad" id="adBot">Место для рекламы (блок)</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const show=n=>["auth","setup","play","ask","done"].forEach(k=>$(k).classList.toggle("hide",k!==n));
+let regMode=true,user=null,db=null,seq=[],total=0,timer=null,cfg={};
+const slug=(a,b)=>(a+"_"+b).toLowerCase().replace(/[^a-zа-яё0-9_]/gi,"").slice(0,80);
+const ls={get:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+// ---- Хранилище: общая база (если доступна) + локальная копия ----
+(async()=>{try{db=await claude.use("db")}catch(e){db=null}tryAuto()})();
+async function getUser(id){
+ if(db){try{const s=await db.collection("players").doc(id).get();if(s.exists)return s.data()}catch(e){}}
+ return ls.get("p_"+id);
+}
+async function saveUser(u){
+ ls.set("p_"+u.id,u);
+ if(db){try{await db.collection("players").doc(u.id).set(u)}catch(e){}}
+}
+async function tryAuto(){const id=ls.get("mm_last");if(id){const u=await getUser(id);if(u){user=u;enter()}}}
+
+$("tReg").onclick=()=>setTab(true);$("tLog").onclick=()=>setTab(false);
+function setTab(r){regMode=r;$("tReg").className=r?"":"sec";$("tLog").className=r?"sec":"";$("aerr").textContent=""}
+$("aGo").onclick=async()=>{
+ const fn=$("fn").value.trim(),ln=$("ln").value.trim(),ph=$("ph").value.trim();
+ if(!fn||!ln){$("aerr").textContent="Введите имя и фамилию";return}
+ const id=slug(fn,ln),ex=await getUser(id);
+ if(regMode){
+  if(ex){$("aerr").textContent="Такой аккаунт уже есть — нажмите «Вход»";return}
+  user={id,fn,ln,ph,played:0,correct:0,cfg:null};await saveUser(user);
+ }else{
+  if(!ex){$("aerr").textContent="Аккаунт не найден — сначала зарегистрируйтесь";return}
+  if(ph&&ex.ph&&ph!==ex.ph){$("aerr").textContent="Номер телефона не совпадает";return}
+  user=ex;
+ }
+ ls.set("mm_last",id);enter();
+};
+$("out").onclick=()=>{ls.set("mm_last",null);user=null;show("auth")};
+
+function enter(){
+ const c=user.cfg||{};
+ $("mode").value=c.mode||"simple";$("dg").value=c.dg||"1";$("cnt").value=c.count||10;$("int").value=c.int||1;
+ ["f5","f10","fm"].forEach(k=>{if(c[k]!==undefined)$(k).checked=c[k]});
+ upd();$("hello").textContent="Привет, "+user.fn+" "+user.ln+"!";
+ $("stats").textContent=`Игр: ${user.played} · Верно: ${user.correct}`;show("setup");
+}
+function upd(){$("cv").textContent=$("cnt").value;$("iv").textContent=(+$("int").value).toFixed(1);$("fbox").classList.toggle("hide",$("mode").value!=="formula")}
+["cnt","int","mode"].forEach(i=>$(i).oninput=upd);
+
+// ---- Генерация последовательности ----
+// Классификация шага по разрядам: simple / f5 / f10 / mix
+function classify(s,x,sign){
+ const r=sign>0?s+x:s-x;if(r<0||r>cfg.max)return null;
+ const T=new Set();let carry=0,a=s,b=x;
+ for(let i=0;i<3;i++){
+  const c=a%10,y=(b%10)+carry;a=Math.floor(a/10);b=Math.floor(b/10);
+  if(y===0&&carry===0){carry=0;continue}
+  if(sign>0){
+   const t=c+y;
+   if(t>=10){T.add(c>=5?"mix":"f10");carry=1}
+   else{carry=0;const ok=y<=4?(c%5+y<=4):(c<5&&c+(y-5)<=4);if(!ok)T.add("f5");else T.add("simple")}
+  }else{
+   const t=c-y;
+   if(t<0){T.add(y>=5?"mix":"f10");carry=1}
+   else{carry=0;const ok=y<=4?(c%5>=y):(c>=5&&c%5>=y-5);if(!ok)T.add("f5");else T.add("simple")}
+  }
+ }
+ return T;
+}
+function gen(){
+ const hi=cfg.dg===1?9:99,lo=cfg.dg===1?1:10,out=[];let s=0;
+ const allow=new Set(["simple"]);if(cfg.mode==="formula"){if(cfg.f5)allow.add("f5");if(cfg.f10)allow.add("f10");if(cfg.fm)allow.add("mix")}
+ const want=[...allow].filter(k=>k!=="simple");
+ for(let i=0;i<cfg.count;i++){
+  let pick=null;
+  for(let a=0;a<300&&!pick;a++){
+   const x=lo+Math.floor(Math.random()*(hi-lo+1)),sg=i===0?1:(Math.random()<.5?1:-1);
+   const T=classify(s,x,sg);if(!T)continue;
+   if(![...T].every(k=>allow.has(k)))continue;
+   if(want.length&&a<200&&![...T].some(k=>want.includes(k)))continue;
+   pick=[sg,x];
+  }
+  if(!pick)break;out.push(pick[0]*pick[1]);s+=pick[0]*pick[1];
+ }
+ total=s;return out;
+}
+
+function confetti(){const e=["🎉","⭐","🎊","✨","🌟","🎈"];for(let i=0;i<40;i++){const s=document.createElement("span");s.className="cf";s.textContent=e[i%6];s.style.left=Math.random()*100+"vw";s.style.animationDuration=(2+Math.random()*2)+"s";s.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(s);setTimeout(()=>s.remove(),5000)}}
+// ---- Игра ----
+function begin(){
+ cfg={mode:$("mode").value,dg:+$("dg").value,count:+$("cnt").value,int:+$("int").value,f5:$("f5").checked,f10:$("f10").checked,fm:$("fm").checked};
+ cfg.max=cfg.mode==="formula"?(cfg.dg===1?99:999):(cfg.dg===1?9:99);
+ if(cfg.mode==="formula"&&!cfg.f5&&!cfg.f10&&!cfg.fm){alert("Выберите хотя бы одну формулу");return}
+ user.cfg={mode:cfg.mode,dg:String(cfg.dg),count:cfg.count,int:cfg.int,f5:cfg.f5,f10:cfg.f10,fm:cfg.fm};saveUser(user);
+ seq=gen();show("play");$("prog").textContent="";$("num").textContent="3";
+ let n=3;const cd=setInterval(()=>{n--;if(n>0)$("num").textContent=n;else{clearInterval(cd);run(0)}},700);
+ timer=cd;
+}
+function run(i){
+ if(i>=seq.length){$("num").textContent="";return setTimeout(()=>{show("ask");$("ans").value="";$("ans").focus()},300)}
+ $("prog").textContent=`${i+1} / ${seq.length}`;
+ const v=seq[i],nm=$("num");nm.textContent=i===0?v:(v>0?"+"+v:"−"+Math.abs(v));nm.style.color=["#ff5d8f","#2e90fa","#12b76a","#ff8a00","#7c4dff"][i%5];nm.classList.remove("pp");void nm.offsetWidth;nm.classList.add("pp");$("pb").style.width=((i+1)/seq.length*100)+"%";
+ const ms=cfg.int*1000,gap=Math.min(150,ms*.2);
+ timer=setTimeout(()=>{$("num").textContent="";timer=setTimeout(()=>run(i+1),gap)},ms-gap);
+}
+$("start").onclick=begin;$("again").onclick=begin;
+$("stop").onclick=()=>{clearTimeout(timer);clearInterval(timer);enter()};
+$("toSet").onclick=enter;
+$("chk").onclick=async()=>{
+ const v=$("ans").value;if(v==="")return;
+ const ok=+v===total;user.played++;if(ok)user.correct++;saveUser(user);
+ $("rmsg").style.color=ok?"var(--ok)":"var(--bad)";
+ $("rmsg").textContent=ok?"Молодец! Правильно!":"Ой, не получилось";$("face").textContent=ok?"🏆":"😢";if(ok)confetti();else{$("done").classList.remove("sh");void $("done").offsetWidth;$("done").classList.add("sh")}
+ $("rsub").textContent=ok?`Ответ: ${total}`:`Вы ответили ${v}. Правильный ответ: ${total}`;
+ $("stats").textContent=`Игр: ${user.played} · Верно: ${user.correct}`;show("done");
+};
+$("ans").onkeydown=e=>{if(e.key==="Enter")$("chk").click()};
+</script></body></html>
